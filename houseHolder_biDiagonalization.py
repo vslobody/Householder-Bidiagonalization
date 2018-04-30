@@ -57,7 +57,7 @@ def extract_packed_house_bidiag(H, betas_U, betas_V):
 
 
 def make_house_vec_2(x):
-#     n = x.shape[0];
+    n = x.shape[0];
  
     # v is our return vector; we hack on v[0]
     v = np.copy(x);
@@ -76,17 +76,19 @@ def make_house_vec_2(x):
     norm_plus = nla.norm(v_plus);
     norm_minus = nla.norm(v_minus);
 
-    if (norm_plus > norm_minus):
-        v = v_plus;
+    if nla.norm(x[1:]) < np.finfo(float).eps*10.0: 
+        beta = 0.0  ;
+        v[0] = 1.0 + 0.0j;
     else:
-        v = v_minus;
+        if (norm_plus < norm_minus):
+            v = v_plus;
+        else:
+            v = v_minus;
     
-    v = v / v[0];        
-    beta = 2 / (nla.norm(v)**2);    
-
+            v = v / v[0];        
+            beta = 2.0 / (nla.norm(v)**2);  
+       
     return v, beta;
-
-
 
 def house_bidiag(A):
     m,n = A.shape
